@@ -10,6 +10,6 @@ Other useful links are as follows:
 ### Details
 I am learning OpenMP because I have a master degree program assignment about running machine learning algorithms in parallel. 
 
-In addition to OpenMP, I am going to do same things by Apache Spark. In summary, this is quite a personal playground repository. 
+In addition to OpenMP, I am going to do same things by using Apache Spark. In summary, this is quite a personal playground repository. 
 It does not mean to cover all the details or become a comprehensible tutorial guide.
  
