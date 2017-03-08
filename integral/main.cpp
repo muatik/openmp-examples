@@ -1,17 +1,19 @@
 #include <iostream>
 #include <omp.h>
 
-void calculation1();
+void integral_roundrobin();
 
-void calculation2();
+void integral_atomic();
+
+void integral_reduction();
 
 int main() {
-//    calculation1();
-    calculation2();
+//    integral_roundrobin();
+    integral_reduction();
 }
 
 
-void calculation1() {
+void integral_roundrobin() {
     int NTHREADS = 48, nthreads;
     long num_steps = 100000000;
     double step = 0;
@@ -53,7 +55,7 @@ void calculation1() {
 
 
 
-void calculation2() {
+void integral_atomic() {
     int NTHREADS = 4;
     long num_steps = 100000000;
     double step = 0;
@@ -87,4 +89,35 @@ void calculation2() {
     // 4 threads  --> 0.25 seconds.
     // 24 threads --> 0.24 seconds.
     // 48 threads --> 0.21 seconds.
+}
+
+
+
+void integral_reduction() {
+    int NTHREADS = 48;
+    long num_steps = 100000000;
+    double step = 0;
+    double pi = 0.0;
+    double sum = 0;
+    int i = 0;
+
+    step = 1.0 / (double) num_steps;
+
+    omp_set_num_threads(NTHREADS);
+    double timer_start = omp_get_wtime();
+
+    #pragma omp parallel for reduction(+:sum)
+    for (i = 0; i < num_steps; ++i) {
+        int x = (i+0.5) * step;
+        sum += 4.0 / (1.0 + x*x);
+    }
+
+    pi = sum * step;
+
+    double timer_took = omp_get_wtime() - timer_start;
+    std::cout << pi << " took " << timer_took;
+    // 1 threads  --> 0.55 seconds.
+    // 4 threads  --> 0.24 seconds.
+    // 24 threads --> 0.24 seconds.
+    // 48 threads --> 0.23 seconds.
 }
