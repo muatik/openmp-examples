@@ -1,24 +1,90 @@
 #include <iostream>
 #include <omp.h>
 
+void calculation1();
+
+void calculation2();
+
 int main() {
-    long num_steps = 1000;
+//    calculation1();
+    calculation2();
+}
+
+
+void calculation1() {
+    int NTHREADS = 48, nthreads;
+    long num_steps = 100000000;
     double step = 0;
-    double x, pi, sum = 0.0;
+    double pi = 0.0;
+    double sum[NTHREADS];
 
     step = 1.0 / (double) num_steps;
+    double timer_start = omp_get_wtime();
+    omp_set_num_threads(NTHREADS);
 
-    omp_set_num_threads(10);
-    #pragma omp parallel for
-    for (int i = 0; i < num_steps ; ++i) {
-        x = (i + 0.5) * step;
-#pragma omp critical
-        {
-            sum = sum + 4.0 / (1 + x * x);
+    #pragma omp parallel
+    {
+        int i, id, lnthreads;
+        double x;
+
+        lnthreads = omp_get_num_threads();
+        id = omp_get_thread_num();
+        if (id == 0)
+            nthreads = lnthreads;
+
+        for (i = id, sum[id]=0; i < num_steps; i+=lnthreads) {
+            x = (i+0.5) * step;
+            sum[id] += 4.0 / (1.0 + x*x);
         }
+
+    }
+    for (int i = 0; i < nthreads; ++i) {
+        pi += sum[i] * step;
     }
 
-    pi = step * sum;
-    std::cout << pi;
-    return 0;
+    double timer_took = omp_get_wtime() - timer_start;
+    std::cout << pi << " took " << timer_took;
+
+    // 1 threads  --> 0.57 seconds.
+    // 4 threads  --> 1.34 seconds.
+    // 24 threads --> 0.59 seconds.
+    // 48 threads --> 0.46 seconds.
+}
+
+
+
+void calculation2() {
+    int NTHREADS = 4;
+    long num_steps = 100000000;
+    double step = 0;
+    double pi = 0.0;
+
+    step = 1.0 / (double) num_steps;
+    double timer_start = omp_get_wtime();
+    omp_set_num_threads(NTHREADS);
+
+    #pragma omp parallel
+    {
+        int i, id, lnthreads;
+        double x, sum = 0;
+
+        lnthreads = omp_get_num_threads();
+        id = omp_get_thread_num();
+
+        for (i = id; i < num_steps; i+=lnthreads) {
+            x = (i+0.5) * step;
+            sum += 4.0 / (1.0 + x*x);
+        }
+
+        #pragma omp atomic
+        pi += sum * step;
+
+    }
+
+    double timer_took = omp_get_wtime() - timer_start;
+    std::cout << pi << " took " << timer_took;
+    // 1 threads  --> 0.53 seconds.
+    // 4 threads  --> 0.25 seconds.
+    // 24 threads --> 0.24 seconds.
+    // 48 threads --> 0.21 seconds.
 }
