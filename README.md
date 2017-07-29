@@ -24,4 +24,4 @@ It does not mean to cover all the details or become a comprehensible tutorial gu
 | integral         | calculating integral in various ways to demonstrate approaches  |
 | scheduling       | thread scheduling                                               |
 | linkedlist       | consuming linkedlist in multiple threads in a thread-safety way |
-| Als              | movie recommender system using alternating least square method  |
+| Als              | movie recommender system using alternating least squares method  |
