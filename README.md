@@ -13,3 +13,14 @@ I am learning OpenMP because I have a master degree program assignment about run
 In addition to OpenMP, I am going to do same things by using Apache Spark. In summary, this is quite a personal playground repository. 
 It does not mean to cover all the details or become a comprehensible tutorial guide.
  
+### Repositories
+| Name             | Description                                                     |
+|------------------|-----------------------------------------------------------------|
+| hello-mp         | Hello world in open-mp                                          |
+| parallel-loop-1  | traversing a loop in parallel                                   |
+| avrage-reduction | calculating avg by using `atomic` and `reduction` concepts      |
+| heap-vs-stack    | sharing(global) and not sharing data(local) between threads.    |
+| data-sharing     | private, first-private, initialization concepts                 |
+| integral         | calculating integral in various ways to demonstrate approaches  |
+| scheduling       | thread scheduling                                               |
+| linkedlist       | consuming linkedlist in multiple threads in a thread-safety way |
